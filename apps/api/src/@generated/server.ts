@@ -13,8 +13,13 @@ import { z } from "zod";
 
 const t = initTRPC.create();
 const publicProcedure = t.procedure;
+import type { CitiesRouter } from "../cities/cities.router.js";
 
 const appRouter = t.router({
+  cities: t.router({
+    getAll: publicProcedure
+      .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<CitiesRouter["getAll"]>>)
+    }),
   health: t.router({
     check: publicProcedure
       .output(z.object({
