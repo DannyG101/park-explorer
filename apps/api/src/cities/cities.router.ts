@@ -1,5 +1,5 @@
 import { Query, Router } from 'nestjs-trpc';
-import { db } from '../db';
+import { db } from '@park-explorer/db';
 
 @Router({ alias: 'cities' })
 export class CitiesRouter {
