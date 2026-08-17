@@ -8,6 +8,20 @@
       "when": 1786522577907,
       "tag": "0000_tricky_xavin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786966719689,
+      "tag": "0001_vengeful_mojo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786968448797,
+      "tag": "0002_secret_mandarin",
+      "breakpoints": true
     }
   ]
 }
