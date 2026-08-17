@@ -5,10 +5,6 @@ import { db } from '@park-explorer/db';
 export class CitiesRouter {
   @Query()
   async getAll() {
-    return db.query.cities.findMany({
-      with: {
-        region: true,
-      },
-    });
+    return db.query.cities.findMany();
   }
 }
