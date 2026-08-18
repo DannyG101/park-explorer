@@ -1,13 +1,10 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import { db, sessions, users } from '@park-explorer/db';
+import { TRPCError } from '@trpc/server';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +14,10 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Email already registered');
+      throw new TRPCError({
+        code: 'CONFLICT',
+        message: 'Email already registered',
+      });
     }
 
     const passwordHash = await argon2.hash(password);
@@ -44,13 +44,19 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Invalid email or password',
+      });
     }
 
     const passwordMatches = await argon2.verify(user.passwordHash, password);
 
     if (!passwordMatches) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Invalid email or password',
+      });
     }
 
     const token = randomBytes(32).toString('hex');
@@ -83,11 +89,17 @@ export class AuthService {
     });
 
     if (!session) {
-      throw new UnauthorizedException('Not logged in');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Not logged in',
+      });
     }
 
     if (session.expiresAt < new Date()) {
-      throw new UnauthorizedException('Session expired');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Session expired',
+      });
     }
 
     return {

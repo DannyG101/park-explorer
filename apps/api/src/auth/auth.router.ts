@@ -1,9 +1,9 @@
-import { UnauthorizedException } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { Ctx, Input, Mutation, Query, Router } from 'nestjs-trpc';
 import { z } from 'zod';
 
 import { AuthService } from './auth.service';
+import { TRPCError } from '@trpc/server';
 
 type AuthRequest = Request & {
   cookies: {
@@ -56,7 +56,10 @@ export class AuthRouter {
     const token = req.cookies.session;
 
     if (!token) {
-      throw new UnauthorizedException('Not logged in');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Not logged in',
+      });
     }
 
     return this.authService.me(token);
