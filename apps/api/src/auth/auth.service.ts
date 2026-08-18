@@ -73,4 +73,27 @@ export class AuthService {
       token,
     };
   }
+
+  async me(token: string) {
+    const session = await db.query.sessions.findFirst({
+      where: eq(sessions.token, token),
+      with: {
+        user: true,
+      },
+    });
+
+    if (!session) {
+      throw new UnauthorizedException('Not logged in');
+    }
+
+    if (session.expiresAt < new Date()) {
+      throw new UnauthorizedException('Session expired');
+    }
+
+    return {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+    };
+  }
 }
