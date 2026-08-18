@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TRPCModule } from 'nestjs-trpc';
 
 import { HealthRouter } from './health/health.router';
-import { CitiesRouter } from './cities/cities.router';
 import { AuthRouter } from './auth/auth.router';
 import { AuthService } from './auth/auth.service';
 import { AppContext } from './trpc/trpc.context';
@@ -25,7 +24,6 @@ import { ParksService } from './parks/parks.service';
 
   providers: [
     HealthRouter,
-    CitiesRouter,
     AuthRouter,
     AuthService,
     AppContext,
