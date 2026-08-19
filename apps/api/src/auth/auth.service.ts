@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { TRPCError } from '@trpc/server';
 import * as argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
 import { db, sessions, users } from '@park-explorer/db';
-import { TRPCError } from '@trpc/server';
+
+import type { LoginDto } from './dto/login.dto';
+import type { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-  async register(name: string, email: string, password: string) {
+  async register(input: RegisterDto) {
     const existingUser = await db.query.users.findFirst({
-      where: eq(users.email, email),
+      where: eq(users.email, input.email),
     });
 
     if (existingUser) {
@@ -20,13 +23,13 @@ export class AuthService {
       });
     }
 
-    const passwordHash = await argon2.hash(password);
+    const passwordHash = await argon2.hash(input.password);
 
     const [user] = await db
       .insert(users)
       .values({
-        name,
-        email,
+        name: input.name,
+        email: input.email,
         passwordHash,
       })
       .returning({
@@ -38,9 +41,9 @@ export class AuthService {
     return user;
   }
 
-  async login(email: string, password: string) {
+  async login(input: LoginDto) {
     const user = await db.query.users.findFirst({
-      where: eq(users.email, email),
+      where: eq(users.email, input.email),
     });
 
     if (!user) {
@@ -50,7 +53,10 @@ export class AuthService {
       });
     }
 
-    const passwordMatches = await argon2.verify(user.passwordHash, password);
+    const passwordMatches = await argon2.verify(
+      user.passwordHash,
+      input.password,
+    );
 
     if (!passwordMatches) {
       throw new TRPCError({
@@ -65,9 +71,9 @@ export class AuthService {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     await db.insert(sessions).values({
-      token: token,
+      token,
       userId: user.id,
-      expiresAt: expiresAt,
+      expiresAt,
     });
 
     return {
@@ -96,6 +102,8 @@ export class AuthService {
     }
 
     if (session.expiresAt < new Date()) {
+      await db.delete(sessions).where(eq(sessions.token, token));
+
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'Session expired',

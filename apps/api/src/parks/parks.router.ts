@@ -1,41 +1,11 @@
-import type { Request } from 'express';
+import { TRPCError } from '@trpc/server';
 import { Ctx, Input, Mutation, Query, Router } from 'nestjs-trpc';
 import { z } from 'zod';
 
 import { AuthService } from '../auth/auth.service';
+import type { AppContextType } from '../trpc/trpc.context';
+import { byIdInput, createParkInput, updateParkInput } from './parks.schema';
 import { ParksService } from './parks.service';
-import { TRPCError } from '@trpc/server';
-
-type AuthRequest = Request & {
-  cookies: {
-    session?: string;
-  };
-};
-
-const parkInput = z.object({
-  name: z.string().min(1),
-  description: z.string().min(1),
-  openingDate: z.string().nullable().optional(),
-  cityId: z.number().int().positive(),
-  latitude: z.number(),
-  longitude: z.number(),
-  polygon: z.unknown().optional(),
-});
-
-const byIdInput = z.object({
-  id: z.number().int().positive(),
-});
-
-const updateInput = z.object({
-  id: z.number().int().positive(),
-  name: z.string().min(1).optional(),
-  description: z.string().min(1).optional(),
-  openingDate: z.string().nullable().optional(),
-  cityId: z.number().int().positive().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-  polygon: z.unknown().optional(),
-});
 
 @Router({ alias: 'parks' })
 export class ParksRouter {
@@ -54,20 +24,20 @@ export class ParksRouter {
     return this.parksService.byId(input.id);
   }
 
-  @Mutation({ input: parkInput })
+  @Mutation({ input: createParkInput })
   async create(
-    @Input() input: z.infer<typeof parkInput>,
-    @Ctx() context: Record<string, unknown>,
+    @Input() input: z.infer<typeof createParkInput>,
+    @Ctx() context: AppContextType,
   ) {
     const user = await this.getCurrentUser(context);
 
     return this.parksService.create(user.id, input);
   }
 
-  @Mutation({ input: updateInput })
+  @Mutation({ input: updateParkInput })
   async update(
-    @Input() input: z.infer<typeof updateInput>,
-    @Ctx() context: Record<string, unknown>,
+    @Input() input: z.infer<typeof updateParkInput>,
+    @Ctx() context: AppContextType,
   ) {
     const user = await this.getCurrentUser(context);
 
@@ -79,17 +49,15 @@ export class ParksRouter {
   @Mutation({ input: byIdInput })
   async delete(
     @Input() input: z.infer<typeof byIdInput>,
-    @Ctx() context: Record<string, unknown>,
+    @Ctx() context: AppContextType,
   ) {
     const user = await this.getCurrentUser(context);
 
     return this.parksService.delete(input.id, user.id);
   }
 
-  private async getCurrentUser(context: Record<string, unknown>) {
-    const req = context.req as AuthRequest;
-
-    const token = req.cookies.session;
+  private async getCurrentUser(context: AppContextType) {
+    const token = context.req.cookies.session;
 
     if (!token) {
       throw new TRPCError({

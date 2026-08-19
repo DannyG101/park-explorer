@@ -1,26 +1,10 @@
-import type { Request, Response } from 'express';
+import { TRPCError } from '@trpc/server';
 import { Ctx, Input, Mutation, Query, Router } from 'nestjs-trpc';
 import { z } from 'zod';
 
+import type { AppContextType } from '../trpc/trpc.context';
+import { loginInput, registerInput } from './auth.schema';
 import { AuthService } from './auth.service';
-import { TRPCError } from '@trpc/server';
-
-type AuthRequest = Request & {
-  cookies: {
-    session?: string;
-  };
-};
-
-const registerInput = z.object({
-  name: z.string().min(1),
-  email: z.email(),
-  password: z.string().min(8),
-});
-
-const loginInput = z.object({
-  email: z.email(),
-  password: z.string(),
-});
 
 @Router({ alias: 'auth' })
 export class AuthRouter {
@@ -28,32 +12,29 @@ export class AuthRouter {
 
   @Mutation({ input: registerInput })
   register(@Input() input: z.infer<typeof registerInput>) {
-    return this.authService.register(input.name, input.email, input.password);
+    return this.authService.register(input);
   }
 
   @Mutation({ input: loginInput })
   async login(
     @Input() input: z.infer<typeof loginInput>,
-    @Ctx() context: Record<string, unknown>,
+    @Ctx() context: AppContextType,
   ) {
-    const result = await this.authService.login(input.email, input.password);
+    const result = await this.authService.login(input);
 
-    const res = context.res as Response;
-
-    res.cookie('session', result.token, {
+    context.res.cookie('session', result.token, {
       httpOnly: true,
       sameSite: 'lax',
       secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return result.user;
   }
 
   @Query()
-  me(@Ctx() context: Record<string, unknown>) {
-    const req = context.req as AuthRequest;
-
-    const token = req.cookies.session;
+  me(@Ctx() context: AppContextType) {
+    const token = context.req.cookies.session;
 
     if (!token) {
       throw new TRPCError({
