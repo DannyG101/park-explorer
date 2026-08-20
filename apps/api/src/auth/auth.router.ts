@@ -6,6 +6,8 @@ import type { AppContextType } from '../trpc/trpc.context';
 import { loginInput, registerInput } from './auth.schema';
 import { AuthService } from './auth.service';
 
+const SEVEN_DAYS_IN_MS = 7 * 24 * 60 * 60 * 1000;
+
 @Router({ alias: 'auth' })
 export class AuthRouter {
   constructor(private readonly authService: AuthService) {}
@@ -26,7 +28,7 @@ export class AuthRouter {
       httpOnly: true,
       sameSite: 'lax',
       secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: SEVEN_DAYS_IN_MS,
     });
 
     return result.user;
