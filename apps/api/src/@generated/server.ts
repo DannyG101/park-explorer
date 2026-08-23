@@ -13,6 +13,8 @@ import { z } from "zod";
 
 const t = initTRPC.create();
 const publicProcedure = t.procedure;
+import { registerInput, loginInput } from "../auth/auth.schema.js";
+import { listParksInput, byIdInput, createParkInput, updateParkInput } from "../parks/parks.schema.js";
 import type { AuthRouter } from "../auth/auth.router.js";
 import type { ParksRouter } from "../parks/parks.router.js";
 import type { RegionsRouter } from "../regions/regions.router.js";
@@ -20,17 +22,10 @@ import type { RegionsRouter } from "../regions/regions.router.js";
 const appRouter = t.router({
   auth: t.router({
     register: publicProcedure
-      .input(z.object({
-  name: z.string().min(1),
-  email: z.email(),
-  password: z.string().min(8),
-}))
+      .input(registerInput)
       .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<AuthRouter["register"]>>),
     login: publicProcedure
-      .input(z.object({
-  email: z.email(),
-  password: z.string(),
-}))
+      .input(loginInput)
       .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<AuthRouter["login"]>>),
     me: publicProcedure
       .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<AuthRouter["me"]>>)
@@ -44,39 +39,19 @@ const appRouter = t.router({
     }),
   parks: t.router({
     list: publicProcedure
+      .input(listParksInput)
       .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<ParksRouter["list"]>>),
     byId: publicProcedure
-      .input(z.object({
-  id: z.number().int().positive(),
-}))
+      .input(byIdInput)
       .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<ParksRouter["byId"]>>),
     create: publicProcedure
-      .input(z.object({
-  name: z.string().min(1),
-  description: z.string().min(1),
-  openingDate: z.string().nullable().optional(),
-  cityId: z.number().int().positive(),
-  latitude: z.number(),
-  longitude: z.number(),
-  polygon: z.unknown().optional(),
-}))
+      .input(createParkInput)
       .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<ParksRouter["create"]>>),
     update: publicProcedure
-      .input(z.object({
-  id: z.number().int().positive(),
-  name: z.string().min(1).optional(),
-  description: z.string().min(1).optional(),
-  openingDate: z.string().nullable().optional(),
-  cityId: z.number().int().positive().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-  polygon: z.unknown().optional(),
-}))
+      .input(updateParkInput)
       .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<ParksRouter["update"]>>),
     delete: publicProcedure
-      .input(z.object({
-  id: z.number().int().positive(),
-}))
+      .input(byIdInput)
       .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<ParksRouter["delete"]>>)
     }),
   regions: t.router({

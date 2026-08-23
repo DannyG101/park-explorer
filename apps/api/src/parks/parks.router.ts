@@ -4,7 +4,12 @@ import { z } from 'zod';
 
 import { AuthService } from '../auth/auth.service';
 import type { AppContextType } from '../trpc/trpc.context';
-import { byIdInput, createParkInput, updateParkInput } from './parks.schema';
+import {
+  byIdInput,
+  createParkInput,
+  listParksInput,
+  updateParkInput,
+} from './parks.schema';
 import { ParksService } from './parks.service';
 
 @Router({ alias: 'parks' })
@@ -14,9 +19,9 @@ export class ParksRouter {
     private readonly authService: AuthService,
   ) {}
 
-  @Query()
-  list() {
-    return this.parksService.list();
+  @Query({ input: listParksInput })
+  list(@Input() input: z.infer<typeof listParksInput>) {
+    return this.parksService.list(input.regionId, input.cityId);
   }
 
   @Query({ input: byIdInput })

@@ -27,3 +27,8 @@ export const updateParkData = z.object({
 export const updateParkInput = updateParkData.extend({
   id: z.number().int().positive(),
 });
+
+export const listParksInput = z.object({
+  regionId: z.number(),
+  cityId: z.number().optional(),
+});

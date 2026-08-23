@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
+import { BrowserRouter } from 'react-router-dom'
+
 import './index.css'
 import App from './App.tsx'
 import { TRPCProvider } from './trpc'
@@ -18,7 +20,7 @@ const trpcClient = createTRPCClient<AppRouter>({
         return fetch(url, {
           ...options,
           credentials: 'include',
-        });
+        })
       },
     }),
   ],
@@ -31,7 +33,9 @@ createRoot(document.getElementById('root')!).render(
         trpcClient={trpcClient}
         queryClient={queryClient}
       >
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </TRPCProvider>
     </QueryClientProvider>
   </StrictMode>,

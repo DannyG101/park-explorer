@@ -1,16 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
-import { eq } from 'drizzle-orm';
+import { and, eq, getTableColumns } from 'drizzle-orm';
 
-import { db, parks } from '@park-explorer/db';
+import { cities, db, parks } from '@park-explorer/db';
 
 import type { CreateParkDto } from './dto/create-park.dto';
 import type { UpdateParkDto } from './dto/update-park.dto';
 
 @Injectable()
 export class ParksService {
-  async list() {
-    return db.query.parks.findMany();
+  async list(regionId: number, cityId?: number) {
+    return db
+      .select({
+        ...getTableColumns(parks),
+      })
+      .from(parks)
+      .innerJoin(cities, eq(parks.cityId, cities.id))
+      .where(
+        and(
+          eq(cities.regionId, regionId),
+          cityId !== undefined ? eq(parks.cityId, cityId) : undefined,
+        ),
+      );
   }
 
   async byId(id: number) {

@@ -1,8 +1,5 @@
 import { useState } from 'react'
-import {
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
 import { useTRPC } from '../../trpc'
@@ -16,30 +13,27 @@ import {
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 
-export function LoginForm() {
+export function RegisterForm() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const trpc = useTRPC()
-  const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const loginMutation = useMutation(
-  trpc.auth.login.mutationOptions({
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(
-        trpc.auth.me.queryFilter(),
-      )
-
-      navigate('/parks')
-    },
-  }),
-)
+  const registerMutation = useMutation(
+    trpc.auth.register.mutationOptions({
+      onSuccess: () => {
+        navigate('/login')
+      },
+    }),
+  )
 
   function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    loginMutation.mutate({
+    registerMutation.mutate({
+      name,
       email,
       password,
     })
@@ -48,7 +42,7 @@ export function LoginForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>Register</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -56,6 +50,17 @@ export function LoginForm() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-4"
         >
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="name">Name</Label>
+
+            <Input
+              id="name"
+              placeholder="Please enter your name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
 
@@ -82,23 +87,25 @@ export function LoginForm() {
 
           <Button
             type="submit"
-            disabled={loginMutation.isPending}
+            disabled={registerMutation.isPending}
           >
-            {loginMutation.isPending ? 'Logging in...' : 'Login'}
+            {registerMutation.isPending
+              ? 'Registering...'
+              : 'Register'}
           </Button>
 
-          {loginMutation.isError && (
+          {registerMutation.isError && (
             <p className="text-sm text-red-500">
-              {loginMutation.error.message}
+              {registerMutation.error.message}
             </p>
           )}
 
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/login')}
           >
-            Don't have an account? Register
+            Already have an account? Login
           </Button>
         </form>
       </CardContent>

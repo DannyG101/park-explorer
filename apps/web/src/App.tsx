@@ -1,12 +1,33 @@
-import { LoginForm } from './components/auth/LoginForm'
+import { Route, Routes } from 'react-router-dom'
+
+import { ParksPage } from './components/parks/ParksPage'
+import { LoginPage } from './components/auth/LoginPage'
+import { RegisterPage } from './components/auth/RegisterPage'
+import { ParkDetailsPage } from './components/parks/ParkDetailsPage'
 
 function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center p-6">
-      <div className="w-full max-w-sm">
-        <LoginForm />
-      </div>
-    </main>
+    <Routes>
+      <Route
+        path="/login"
+        element={<LoginPage />}
+      />
+
+      <Route
+        path="/register"
+        element={<RegisterPage />}
+      />
+
+      <Route
+        path="/parks"
+        element={<ParksPage />}
+      />
+
+      <Route
+        path="/parks/:id"
+        element={<ParkDetailsPage />}
+      />
+    </Routes>
   )
 }
 
