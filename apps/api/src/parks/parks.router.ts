@@ -20,12 +20,22 @@ export class ParksRouter {
   ) {}
 
   @Query({ input: listParksInput })
-  list(@Input() input: z.infer<typeof listParksInput>) {
+  async list(
+    @Input() input: z.infer<typeof listParksInput>,
+    @Ctx() context: AppContextType,
+  ) {
+    await this.getCurrentUser(context);
+
     return this.parksService.list(input.regionId, input.cityId);
   }
 
   @Query({ input: byIdInput })
-  byId(@Input() input: z.infer<typeof byIdInput>) {
+  async byId(
+    @Input() input: z.infer<typeof byIdInput>,
+    @Ctx() context: AppContextType,
+  ) {
+    await this.getCurrentUser(context);
+
     return this.parksService.byId(input.id);
   }
 

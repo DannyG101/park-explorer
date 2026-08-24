@@ -1,17 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query";
 
-import { useTRPC } from '@/trpc'
-import { Input } from '../ui/input'
-
-type ParkFiltersProps = {
-  search: string
-  selectedRegionId: number | null
-  selectedCityId: number | null
-  showSearch: boolean
-  onSearchChange: (search: string) => void
-  onRegionChange: (regionId: number | null) => void
-  onCityChange: (cityId: number | null) => void
-}
+import type { ParkFiltersProps } from "@/types/park.types";
+import { useTRPC } from "@/trpc";
+import { Input } from "../ui/input";
 
 export function ParkFilters({
   search,
@@ -22,11 +13,9 @@ export function ParkFilters({
   onRegionChange,
   onCityChange,
 }: ParkFiltersProps) {
-  const trpc = useTRPC()
+  const trpc = useTRPC();
 
-  const regionsQuery = useQuery(
-    trpc.regions.list.queryOptions(),
-  )
+  const regionsQuery = useQuery(trpc.regions.list.queryOptions());
 
   const citiesQuery = useQuery(
     trpc.regions.citiesByRegion.queryOptions(
@@ -37,22 +26,18 @@ export function ParkFilters({
         enabled: selectedRegionId !== null,
       },
     ),
-  )
+  );
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4">
         <select
           className="rounded-md border p-2"
-          value={selectedRegionId ?? ''}
+          value={selectedRegionId ?? ""}
           onChange={(event) => {
-            const value = event.target.value
+            const value = event.target.value;
 
-            onRegionChange(
-              value ? Number(value) : null,
-            )
-
-            onCityChange(null)
+            onRegionChange(value ? Number(value) : null);
           }}
         >
           <option value="">Select a region</option>
@@ -66,14 +51,12 @@ export function ParkFilters({
 
         <select
           className="rounded-md border p-2"
-          value={selectedCityId ?? ''}
+          value={selectedCityId ?? ""}
           disabled={selectedRegionId === null}
           onChange={(event) => {
-            const value = event.target.value
+            const value = event.target.value;
 
-            onCityChange(
-              value ? Number(value) : null,
-            )
+            onCityChange(value ? Number(value) : null);
           }}
         >
           <option value="">All cities</option>
@@ -91,11 +74,9 @@ export function ParkFilters({
           type="text"
           placeholder="Search By Park Name......"
           value={search}
-          onChange={(event) =>
-            onSearchChange(event.target.value)
-          }
+          onChange={(event) => onSearchChange(event.target.value)}
         />
       )}
     </div>
-  )
+  );
 }

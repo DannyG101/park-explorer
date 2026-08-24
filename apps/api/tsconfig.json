@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "declaration": true,
+    "composite": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -24,4 +25,3 @@
     "noFallthroughCasesInSwitch": false
   }
 }
-

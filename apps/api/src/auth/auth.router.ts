@@ -34,6 +34,23 @@ export class AuthRouter {
     return result.user;
   }
 
+  @Mutation()
+  async logout(@Ctx() context: AppContextType) {
+    const token = context.req.cookies.session;
+
+    if (token) {
+      await this.authService.logout(token);
+    }
+
+    context.res.clearCookie('session', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+    });
+
+    return { message: 'Logged out successfully' };
+  }
+
   @Query()
   me(@Ctx() context: AppContextType) {
     const token = context.req.cookies.session;

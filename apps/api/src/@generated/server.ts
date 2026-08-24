@@ -27,6 +27,8 @@ const appRouter = t.router({
     login: publicProcedure
       .input(loginInput)
       .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<AuthRouter["login"]>>),
+    logout: publicProcedure
+      .mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<AuthRouter["logout"]>>),
     me: publicProcedure
       .query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as unknown as Awaited<ReturnType<AuthRouter["me"]>>)
     }),

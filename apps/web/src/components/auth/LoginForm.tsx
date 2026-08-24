@@ -1,48 +1,38 @@
-import { useState } from 'react'
-import {
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
-import { useTRPC } from '../../trpc'
-import { Button } from '../ui/button'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '../ui/card'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
+import { useTRPC } from "../../trpc";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 export function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const loginMutation = useMutation(
-  trpc.auth.login.mutationOptions({
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(
-        trpc.auth.me.queryFilter(),
-      )
+    trpc.auth.login.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(trpc.auth.me.queryFilter());
 
-      navigate('/parks')
-    },
-  }),
-)
+        navigate("/parks");
+      },
+    }),
+  );
 
   function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
-    event.preventDefault()
+    event.preventDefault();
 
     loginMutation.mutate({
       email,
       password,
-    })
+    });
   }
 
   return (
@@ -52,10 +42,7 @@ export function LoginForm() {
       </CardHeader>
 
       <CardContent>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
 
@@ -81,10 +68,11 @@ export function LoginForm() {
           </div>
 
           <Button
+            variant="outline"
             type="submit"
             disabled={loginMutation.isPending}
           >
-            {loginMutation.isPending ? 'Logging in...' : 'Login'}
+            {loginMutation.isPending ? "Logging in..." : "Login"}
           </Button>
 
           {loginMutation.isError && (
@@ -96,12 +84,12 @@ export function LoginForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate('/register')}
+            onClick={() => navigate("/register")}
           >
             Don't have an account? Register
           </Button>
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

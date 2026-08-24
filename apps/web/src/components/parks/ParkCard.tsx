@@ -1,18 +1,8 @@
 import { Link } from 'react-router-dom'
 
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import type { ParkCardProps } from '@/types/park.types'
 
-type ParkCardProps = {
-  park: {
-    id: number
-    name: string
-    description: string
-    openingDate: string | null
-    cityId: number
-    latitude: number
-    longitude: number
-  }
-}
 
 export function ParkCard({ park }: ParkCardProps) {
   return (

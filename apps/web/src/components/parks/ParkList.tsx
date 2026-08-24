@@ -1,16 +1,5 @@
+import type { ParkListProps } from '@/types/park.types'
 import { ParkCard } from './ParkCard'
-
-type ParkListProps = {
-  parks: {
-    id: number
-    name: string
-    description: string
-    openingDate: string | null
-    cityId: number
-    latitude: number
-    longitude: number
-  }[]
-}
 
 export function ParkList({ parks }: ParkListProps) {
   return (

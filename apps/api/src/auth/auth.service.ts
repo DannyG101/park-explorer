@@ -116,4 +116,10 @@ export class AuthService {
       email: session.user.email,
     };
   }
+
+  async logout(token: string) {
+    await db.delete(sessions).where(eq(sessions.token, token));
+
+    return { message: 'Logged out successfully' };
+  }
 }
