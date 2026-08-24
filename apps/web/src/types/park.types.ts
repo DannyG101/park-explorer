@@ -22,3 +22,7 @@ export type ParkFiltersProps = {
   onRegionChange: (regionId: number | null) => void;
   onCityChange: (cityId: number | null) => void;
 };
+
+export type ParksMapProps = {
+  parks: Park[];
+};

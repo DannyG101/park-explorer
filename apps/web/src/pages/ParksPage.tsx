@@ -2,6 +2,7 @@ import { skipToken, useQuery } from "@tanstack/react-query";
 
 import { ParkFilters } from "@/components/parks/ParkFilters";
 import { ParkList } from "@/components/parks/ParkList";
+import { ParksMap } from '@/components/parks/ParksMap';
 import { useParkFilters } from "@/hooks/useParkFilters";
 import { useTRPC } from "@/trpc";
 
@@ -37,6 +38,8 @@ export function ParksPage() {
   return (
     <main className="p-6">
       <h1 className="mb-6 text-3xl font-bold">Parks</h1>
+
+      <ParksMap parks={parks} />
 
       <div className="mb-6">
         <ParkFilters
