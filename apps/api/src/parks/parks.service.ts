@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { and, eq, getTableColumns } from 'drizzle-orm';
 
-import { cities, db, parks } from '@park-explorer/db';
+import { cities, db, parks, regions } from '@park-explorer/db';
 
 import type { CreateParkDto } from './dto/create-park.dto';
 import type { UpdateParkDto } from './dto/update-park.dto';
@@ -13,19 +13,48 @@ export class ParksService {
     return db
       .select({
         ...getTableColumns(parks),
+
+        city: {
+          id: cities.id,
+          name: cities.name,
+        },
+
+        region: {
+          id: regions.id,
+          name: regions.name,
+        },
       })
       .from(parks)
       .innerJoin(cities, eq(parks.cityId, cities.id))
+      .innerJoin(regions, eq(cities.regionId, regions.id))
       .where(
         and(
           eq(cities.regionId, regionId),
+
           cityId !== undefined ? eq(parks.cityId, cityId) : undefined,
         ),
       );
   }
 
   async byId(id: number) {
-    const [park] = await db.select().from(parks).where(eq(parks.id, id));
+    const [park] = await db
+      .select({
+        ...getTableColumns(parks),
+
+        city: {
+          id: cities.id,
+          name: cities.name,
+        },
+
+        region: {
+          id: regions.id,
+          name: regions.name,
+        },
+      })
+      .from(parks)
+      .innerJoin(cities, eq(parks.cityId, cities.id))
+      .innerJoin(regions, eq(cities.regionId, regions.id))
+      .where(eq(parks.id, id));
 
     if (!park) {
       throw new TRPCError({
@@ -69,7 +98,9 @@ export class ParksService {
 
     await db.delete(parks).where(eq(parks.id, id));
 
-    return { message: 'Park deleted successfully' };
+    return {
+      message: 'Park deleted successfully',
+    };
   }
 
   private async findParkAndCheckOwnership(id: number, userId: number) {

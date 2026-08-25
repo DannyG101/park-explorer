@@ -6,7 +6,9 @@ import { useTRPC } from "@/trpc";
 export function ParkDetailsPage() {
   const { id } = useParams();
   const parkId = Number(id);
+
   const trpc = useTRPC();
+
   const parkQuery = useQuery(
     trpc.parks.byId.queryOptions({
       id: parkId,
@@ -38,12 +40,16 @@ export function ParkDetailsPage() {
       <div className="flex flex-col gap-2">
         <p>{park.description}</p>
 
-        <p>Opening date: {park.openingDate ?? "Not provided"}</p>
-
-        <p>City ID: {park.cityId}</p>
+        <p>
+          <strong>City:</strong> {park.city.name}
+        </p>
 
         <p>
-          Coordinates: {park.latitude}, {park.longitude}
+          <strong>Region:</strong> {park.region.name}
+        </p>
+
+        <p>
+          <strong>Opening date:</strong> {park.openingDate ?? "Not provided"}
         </p>
       </div>
     </main>

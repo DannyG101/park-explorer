@@ -29,50 +29,49 @@ export function ParkFilters({
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex gap-4">
-        <select
-          className="rounded-md border p-2"
-          value={selectedRegionId ?? ""}
-          onChange={(event) => {
-            const value = event.target.value;
+    <div className="flex flex-wrap items-center gap-3">
+      <select
+        className="h-10 min-w-44 rounded-md border bg-white px-3"
+        value={selectedRegionId ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
 
-            onRegionChange(value ? Number(value) : null);
-          }}
-        >
-          <option value="">Select a region</option>
+          onRegionChange(value ? Number(value) : null);
+        }}
+      >
+        <option value="">Select a region</option>
 
-          {regionsQuery.data?.map((region) => (
-            <option key={region.id} value={region.id}>
-              {region.name}
-            </option>
-          ))}
-        </select>
+        {regionsQuery.data?.map((region) => (
+          <option key={region.id} value={region.id}>
+            {region.name}
+          </option>
+        ))}
+      </select>
 
-        <select
-          className="rounded-md border p-2"
-          value={selectedCityId ?? ""}
-          disabled={selectedRegionId === null}
-          onChange={(event) => {
-            const value = event.target.value;
+      <select
+        className="h-10 min-w-44 rounded-md border bg-white px-3 disabled:cursor-not-allowed disabled:opacity-50"
+        value={selectedCityId ?? ""}
+        disabled={selectedRegionId === null}
+        onChange={(event) => {
+          const value = event.target.value;
 
-            onCityChange(value ? Number(value) : null);
-          }}
-        >
-          <option value="">All cities</option>
+          onCityChange(value ? Number(value) : null);
+        }}
+      >
+        <option value="">All cities</option>
 
-          {citiesQuery.data?.map((city) => (
-            <option key={city.id} value={city.id}>
-              {city.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        {citiesQuery.data?.map((city) => (
+          <option key={city.id} value={city.id}>
+            {city.name}
+          </option>
+        ))}
+      </select>
 
       {showSearch && (
         <Input
+          className="h-10 min-w-56 flex-1"
           type="text"
-          placeholder="Search By Park Name......"
+          placeholder="Search by park name..."
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
         />
