@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc";
 
 export function ParkDetailsPage() {
   const { id } = useParams();
   const parkId = Number(id);
 
+  const navigate = useNavigate();
   const trpc = useTRPC();
 
   const parkQuery = useQuery(
@@ -16,41 +18,79 @@ export function ParkDetailsPage() {
   );
 
   if (!Number.isInteger(parkId) || parkId <= 0) {
-    return <p className="p-6">Invalid park ID.</p>;
+    return (
+      <main className="mx-auto w-full max-w-7xl px-6 py-10">
+        <p className="text-lg text-slate-800">Invalid park ID.</p>
+      </main>
+    );
   }
 
   if (parkQuery.isLoading) {
-    return <p className="p-6">Loading park...</p>;
+    return (
+      <main className="mx-auto w-full max-w-7xl px-6 py-10">
+        <p className="text-lg text-slate-800">Loading park...</p>
+      </main>
+    );
   }
 
   if (parkQuery.isError) {
-    return <p className="p-6">{parkQuery.error.message}</p>;
+    return (
+      <main className="mx-auto w-full max-w-7xl px-6 py-10">
+        <p className="text-lg text-slate-800">{parkQuery.error.message}</p>
+      </main>
+    );
   }
 
   if (!parkQuery.data) {
-    return <p className="p-6">Park not found.</p>;
+    return (
+      <main className="mx-auto w-full max-w-7xl px-6 py-10">
+        <p className="text-lg text-slate-800">Park not found.</p>
+      </main>
+    );
   }
 
   const park = parkQuery.data;
 
   return (
-    <main className="p-6">
-      <h1 className="mb-4 text-3xl font-bold">{park.name}</h1>
+    <main className="mx-auto w-full max-w-7xl px-6 py-10">
+      <Button variant="outline" className="mb-8" onClick={() => navigate(-1)}>
+        ← Back to parks
+      </Button>
 
-      <div className="flex flex-col gap-2">
-        <p>{park.description}</p>
+      <div className="max-w-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-950 md:text-5xl">
+          {park.name}
+        </h1>
 
-        <p>
-          <strong>City:</strong> {park.city.name}
+        <p className="mt-5 max-w-4xl text-xl leading-8 text-slate-800">
+          {park.description}
         </p>
 
-        <p>
-          <strong>Region:</strong> {park.region.name}
-        </p>
+        <div className="mt-10 border-t border-slate-200 pt-8">
+          <div className="flex flex-col gap-8 sm:flex-row sm:flex-wrap sm:gap-x-16">
+            <div className="min-w-40">
+              <p className="text-base font-semibold text-slate-950">City</p>
 
-        <p>
-          <strong>Opening date:</strong> {park.openingDate ?? "Not provided"}
-        </p>
+              <p className="mt-2 text-lg text-slate-800">{park.city.name}</p>
+            </div>
+
+            <div className="min-w-40">
+              <p className="text-base font-semibold text-slate-950">Region</p>
+
+              <p className="mt-2 text-lg text-slate-800">{park.region.name}</p>
+            </div>
+
+            <div className="min-w-52">
+              <p className="text-base font-semibold text-slate-950">
+                Opening date
+              </p>
+
+              <p className="mt-2 text-lg text-slate-800">
+                {park.openingDate ?? "Not provided"}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

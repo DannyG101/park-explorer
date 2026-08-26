@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import type { ParkFiltersProps } from "@/types/park.types";
 import { useTRPC } from "@/trpc";
+
 import { Input } from "../ui/input";
 
 export function ParkFilters({
@@ -31,7 +32,7 @@ export function ParkFilters({
   return (
     <div className="flex flex-wrap items-center gap-3">
       <select
-        className="h-10 min-w-44 rounded-md border bg-white px-3"
+        className="h-11 min-w-48 rounded-lg border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
         value={selectedRegionId ?? ""}
         onChange={(event) => {
           const value = event.target.value;
@@ -49,7 +50,7 @@ export function ParkFilters({
       </select>
 
       <select
-        className="h-10 min-w-44 rounded-md border bg-white px-3 disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-11 min-w-48 rounded-lg border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
         value={selectedCityId ?? ""}
         disabled={selectedRegionId === null}
         onChange={(event) => {
@@ -69,9 +70,9 @@ export function ParkFilters({
 
       {showSearch && (
         <Input
-          className="h-10 min-w-56 flex-1"
+          className="h-11 min-w-64 flex-1 rounded-lg border-slate-200 bg-white px-4 text-sm shadow-none focus-visible:ring-slate-200"
           type="text"
-          placeholder="Search by park name..."
+          placeholder="Search parks by name..."
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
         />

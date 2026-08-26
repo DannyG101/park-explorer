@@ -17,6 +17,7 @@ import type { GeoJsonObject } from "geojson";
 import type { ParksMapProps } from "@/types/park.types";
 
 const ISRAEL_CENTER: [number, number] = [31.7683, 35.2137];
+
 const ISRAEL_ZOOM = 8;
 
 function MapFocus({ parks, focusedParkId }: ParksMapProps) {
@@ -33,7 +34,9 @@ function MapFocus({ parks, focusedParkId }: ParksMapProps) {
       return;
     }
 
-    map.flyTo([focusedPark.latitude, focusedPark.longitude], 15);
+    map.flyTo([focusedPark.latitude, focusedPark.longitude], 15, {
+      duration: 1.2,
+    });
   }, [focusedParkId, parks, map]);
 
   return null;
@@ -52,7 +55,10 @@ function RegionFocus({
     }
 
     if (selectedRegionId === null) {
-      map.flyTo(ISRAEL_CENTER, ISRAEL_ZOOM);
+      map.flyTo(ISRAEL_CENTER, ISRAEL_ZOOM, {
+        duration: 1.2,
+      });
+
       return;
     }
 
@@ -64,9 +70,10 @@ function RegionFocus({
       (park) => [park.latitude, park.longitude] as [number, number],
     );
 
-    map.fitBounds(positions, {
+    map.flyToBounds(positions, {
       padding: [40, 40],
       maxZoom: 11,
+      duration: 1.2,
     });
   }, [parks, focusedParkId, selectedRegionId, map]);
 
@@ -82,7 +89,7 @@ export function ParksMap({
     <MapContainer
       center={ISRAEL_CENTER}
       zoom={ISRAEL_ZOOM}
-      className="h-[500px] w-full rounded-lg"
+      className="h-full w-full"
     >
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
@@ -107,25 +114,30 @@ export function ParksMap({
           position={[park.latitude, park.longitude]}
         >
           <Popup>
-            <div className="min-w-48">
-              <strong className="text-base">{park.name}</strong>
+            <div className="min-w-56">
+              <h3 className="text-lg font-bold text-slate-950">{park.name}</h3>
 
-              <p className="!my-1 text-sm">{park.description}</p>
-
-              <p className="!my-1 text-sm">
-                <strong>Location:</strong> {park.city.name}, {park.region.name}
+              <p className="!my-2 text-sm leading-5 text-slate-600">
+                {park.description}
               </p>
 
-              <p className="!my-1 text-sm">
-                <strong>Opening date:</strong>{" "}
-                {park.openingDate ?? "Not provided"}
-              </p>
+              <div className="!my-3 flex flex-col gap-1 text-sm text-slate-700">
+                <p className="!m-0">
+                  <strong>Location:</strong> {park.city.name},{" "}
+                  {park.region.name}
+                </p>
+
+                <p className="!m-0">
+                  <strong>Opening date:</strong>{" "}
+                  {park.openingDate ?? "Not provided"}
+                </p>
+              </div>
 
               <Link
                 to={`/parks/${park.id}`}
-                className="mt-1 inline-block font-medium underline"
+                className="inline-block text-sm font-semibold text-slate-950 underline-offset-4 hover:underline"
               >
-                View details
+                View details →
               </Link>
             </div>
           </Popup>
