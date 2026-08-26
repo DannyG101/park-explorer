@@ -51,14 +51,16 @@ export function ParksPage() {
   function renderLeftContent() {
     if (selectedRegionId === null) {
       return (
-        <div className="flex h-full items-center justify-center px-6 text-center">
-          <div className="max-w-xs">
-            <h2 className="text-2xl font-semibold text-slate-900">
+        <div className="flex h-full items-center px-4">
+          <div className="max-w-sm">
+            <div className="mb-5 h-1 w-12 rounded-full bg-primary" />
+
+            <h2 className="text-3xl font-bold tracking-tight text-slate-950">
               Start exploring
             </h2>
 
-            <p className="mt-3 leading-6 text-slate-500">
-              Select a region above to discover parks across Israel.
+            <p className="mt-4 text-lg leading-7 text-slate-600">
+              Choose a region above to discover parks across Israel.
             </p>
           </div>
         </div>
@@ -67,13 +69,15 @@ export function ParksPage() {
 
     if (parksQuery.isLoading) {
       return (
-        <div className="flex h-full items-center justify-center px-6 text-center">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">
+        <div className="flex h-full items-center px-4">
+          <div className="max-w-sm">
+            <div className="mb-5 h-1 w-12 rounded-full bg-primary" />
+
+            <h2 className="text-2xl font-bold text-slate-950">
               Loading parks...
             </h2>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-3 text-base leading-7 text-slate-600">
               Finding parks in the selected area.
             </p>
           </div>
@@ -83,13 +87,15 @@ export function ParksPage() {
 
     if (parksQuery.isError) {
       return (
-        <div className="flex h-full items-center justify-center px-6 text-center">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">
+        <div className="flex h-full items-center px-4">
+          <div className="max-w-sm">
+            <div className="mb-5 h-1 w-12 rounded-full bg-primary" />
+
+            <h2 className="text-2xl font-bold text-slate-950">
               Could not load parks
             </h2>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-3 text-base leading-7 text-slate-600">
               {parksQuery.error.message}
             </p>
           </div>
@@ -99,14 +105,16 @@ export function ParksPage() {
 
     if (parks.length === 0) {
       return (
-        <div className="flex h-full items-center justify-center px-6 text-center">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">
-              No parks found
+        <div className="flex h-full items-center px-4">
+          <div className="max-w-sm">
+            <div className="mb-5 h-1 w-12 rounded-full bg-primary" />
+
+            <h2 className="text-3xl font-bold tracking-tight text-slate-950">
+              No parks here yet
             </h2>
 
-            <p className="mt-2 text-sm text-slate-500">
-              Try another region or city.
+            <p className="mt-4 text-lg leading-7 text-slate-600">
+              Try choosing another city or region to keep exploring.
             </p>
           </div>
         </div>
@@ -115,14 +123,17 @@ export function ParksPage() {
 
     if (filteredParks.length === 0) {
       return (
-        <div className="flex h-full items-center justify-center px-6 text-center">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">
-              No matching parks
+        <div className="flex h-full items-center px-4">
+          <div className="max-w-sm">
+            <div className="mb-5 h-1 w-12 rounded-full bg-primary" />
+
+            <h2 className="text-3xl font-bold tracking-tight text-slate-950">
+              No matches
             </h2>
 
-            <p className="mt-2 text-sm text-slate-500">
-              Try a different search.
+            <p className="mt-4 text-lg leading-7 text-slate-600">
+              We couldn&apos;t find a park matching &quot;{search}&quot;. Try
+              another search.
             </p>
           </div>
         </div>
@@ -131,15 +142,13 @@ export function ParksPage() {
 
     return (
       <div className="h-full overflow-y-auto pr-2">
-        <div className="mb-4 flex items-end justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900">Parks</h2>
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-slate-900">Parks</h2>
 
-            <p className="text-sm text-slate-500">
-              {filteredParks.length}{" "}
-              {filteredParks.length === 1 ? "park" : "parks"} found
-            </p>
-          </div>
+          <p className="text-sm text-slate-500">
+            {filteredParks.length}{" "}
+            {filteredParks.length === 1 ? "park" : "parks"} found
+          </p>
         </div>
 
         <ParkList parks={filteredParks} onParkClick={setFocusedParkId} />
@@ -169,7 +178,6 @@ export function ParksPage() {
           search={search}
           selectedRegionId={selectedRegionId}
           selectedCityId={selectedCityId}
-          showSearch={parksQuery.isSuccess && parks.length > 0}
           onSearchChange={setSearch}
           onRegionChange={handleRegionChange}
           onCityChange={handleCityChange}

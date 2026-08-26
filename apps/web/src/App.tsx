@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { AuthenticatedLayout } from "./layouts/AuthenticatedLayout";
+import { AppLayout } from "./layouts/AppLayout";
 import { LoginPage } from "./pages/LoginPage";
 import { ParkDetailsPage } from "./pages/ParkDetailsPage";
 import { ParksPage } from "./pages/ParksPage";
@@ -15,7 +15,7 @@ function App() {
 
       <Route path="/register" element={<RegisterPage />} />
 
-      <Route element={<AuthenticatedLayout />}>
+      <Route element={<AppLayout />}>
         <Route path="/parks" element={<ParksPage />} />
 
         <Route path="/parks/:id" element={<ParkDetailsPage />} />

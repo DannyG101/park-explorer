@@ -1,9 +1,28 @@
-import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "../../../api/src/@generated/server";
+export type Park = {
+  id: number;
+  name: string;
+  description: string;
+  creatorId: number;
+  openingDate: string | null;
+  cityId: number;
+  latitude: number;
+  longitude: number;
 
-type RouterOutputs = inferRouterOutputs<AppRouter>;
+  polygon?: unknown;
 
-export type Park = RouterOutputs["parks"]["list"][number];
+  createdAt: string;
+  updatedAt: string;
+
+  city: {
+    id: number;
+    name: string;
+  };
+
+  region: {
+    id: number;
+    name: string;
+  };
+};
 
 export type ParkCardProps = {
   park: Park;
@@ -25,7 +44,6 @@ export type ParkFiltersProps = {
   search: string;
   selectedRegionId: number | null;
   selectedCityId: number | null;
-  showSearch: boolean;
   onSearchChange: (search: string) => void;
   onRegionChange: (regionId: number | null) => void;
   onCityChange: (cityId: number | null) => void;

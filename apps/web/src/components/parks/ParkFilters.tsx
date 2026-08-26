@@ -9,7 +9,6 @@ export function ParkFilters({
   search,
   selectedRegionId,
   selectedCityId,
-  showSearch,
   onSearchChange,
   onRegionChange,
   onCityChange,
@@ -28,6 +27,8 @@ export function ParkFilters({
       },
     ),
   );
+
+  const searchDisabled = selectedRegionId === null;
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -68,15 +69,18 @@ export function ParkFilters({
         ))}
       </select>
 
-      {showSearch && (
-        <Input
-          className="h-11 min-w-64 flex-1 rounded-lg border-slate-200 bg-white px-4 text-sm shadow-none focus-visible:ring-slate-200"
-          type="text"
-          placeholder="Search parks by name..."
-          value={search}
-          onChange={(event) => onSearchChange(event.target.value)}
-        />
-      )}
+      <Input
+        className="h-11 min-w-64 flex-1 rounded-lg border-slate-200 bg-white px-4 text-sm shadow-none focus-visible:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-100"
+        type="text"
+        placeholder={
+          searchDisabled
+            ? "Select a region to search parks..."
+            : "Search parks by name..."
+        }
+        value={search}
+        disabled={searchDisabled}
+        onChange={(event) => onSearchChange(event.target.value)}
+      />
     </div>
   );
 }
