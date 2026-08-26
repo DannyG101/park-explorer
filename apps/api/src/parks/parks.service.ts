@@ -6,10 +6,11 @@ import { cities, db, parks, regions } from '@park-explorer/db';
 
 import type { CreateParkDto } from './dto/create-park.dto';
 import type { UpdateParkDto } from './dto/update-park.dto';
+import type { ParkResultDto } from './dto/park-result.dto';
 
 @Injectable()
 export class ParksService {
-  async list(regionId: number, cityId?: number) {
+  async list(regionId: number, cityId?: number): Promise<ParkResultDto[]> {
     return db
       .select({
         ...getTableColumns(parks),
@@ -36,7 +37,7 @@ export class ParksService {
       );
   }
 
-  async byId(id: number) {
+  async byId(id: number): Promise<ParkResultDto> {
     const [park] = await db
       .select({
         ...getTableColumns(parks),
